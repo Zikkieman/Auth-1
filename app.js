@@ -2,6 +2,8 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
+import encrypt from "mongoose-encryption"
+
 import ejs from "ejs";
 
 const app = express();
@@ -13,10 +15,13 @@ mongoose.connect("mongodb://localhost:27017/userDB").then(() => {
   console.log("Connected to database");
 });
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: String,
   password: String,
-};
+});
+
+const secret = "Thisisourlittlesecret.";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
 
 const User = mongoose.model("User", userSchema);
 
